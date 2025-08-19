@@ -16,7 +16,9 @@ export default function LoginButton() {
 
       const data = await res.json();
 
-      if (data.user) setUser(data.user);
+      if (data.access && data.user) {
+        setUser({ ...data.user, access_token: data.access }); // store access token with user
+      }    
     } catch (error) {
       console.error('Login failed', error);
     }

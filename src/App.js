@@ -6,28 +6,19 @@ import LoginButton from './LoginButton.js';
 import Game from './Game.js';
 import { WebSocketProvider } from './WebSocketContext.js';
 import { BACKEND } from './config';
+import useServerReady from './useServerReady.js';
+import LoadingScreen from './LoadingScreen.js';
 
 export const UserContext = createContext(null);
 
 export default function App() {
   const [user, setUser] = useState(null);
 
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const checkServer = async () => {
-      try {
-        await fetch(`${BACKEND}/ping/`);
-        setLoading(false);
-      } catch (err) {
-        console.error("Server not reachable", err);
-      }
-    };
-    checkServer();
-  }, []);
+  const loading = useServerReady(`${BACKEND}/ping/`);
 
-  if (loading) return <div style={{textAlign: 'center', marginTop: '50px'}}>Server loading...<br/>Free tier hosting may take a minute!<br/>Be patient</div>;
 
+  if (loading) return <LoadingScreen />;
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

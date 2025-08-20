@@ -26,13 +26,22 @@ export default function Game() {
     fetchData();
   }, []);
 
-
   useEffect(() => {
-    if (!ws) return; // wait until WS exists
+    if (!ws) return;
 
     const handleMessage = (event) => {
       try {
-        const pixel = JSON.parse(event.data);
+        const raw = JSON.parse(event.data);
+
+        // normalize keys we expect in the UI
+        const pixel = {
+          x: raw.x,
+          y: raw.y,
+          owner: raw.owner ?? raw.owner__user__username ?? "Unknown", // fallback if shape varies
+          description: raw.description ?? "",
+          planted_on: raw.planted_on ?? raw.plantedOn ?? raw.plantedOnIso ?? "",
+        };
+
         setPixels(prev => {
           const filtered = prev.filter(p => !(p.x === pixel.x && p.y === pixel.y));
           return [...filtered, pixel];
@@ -43,10 +52,7 @@ export default function Game() {
     };
 
     ws.addEventListener("message", handleMessage);
-
-    return () => {
-      ws.removeEventListener("message", handleMessage);
-    };
+    return () => ws.removeEventListener("message", handleMessage);
   }, [ws]);
 
   const handleClick = async (e) => {
@@ -108,19 +114,13 @@ export default function Game() {
           x: pixel.x,
           y: pixel.y,
           size: PIXEL_SIZE,
-          plantedBy: pixel.owner__user__username || "Unknown",
-          date: pixel.planted_on || "N/A",
+          plantedBy: pixel.owner || "EL PEPE",          // use normalized `owner`
+          date: pixel.planted_on || "N/A",              // ISO string is fine for display/parse
           description: pixel.description || "No info available",
         };
 
         const key = `${pixel.x},${pixel.y}`;
-
-        return (
-          <PlantInteractive
-            key={key}
-            plantInfo={plantInfo}
-          />
-        );
+        return <PlantInteractive key={key} plantInfo={plantInfo} />;
       })}
     </div>
   );

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
-import { BACKEND, WS_BACKEND } from './config';
+import React, { useState, useEffect, useContext } from 'react';
+import { BACKEND } from './config';
 import { UserContext } from './App';
 import PlantInteractive from './PlantInteractive';
 import { useWebSocket } from "./WebSocketContext";
@@ -65,10 +65,7 @@ export default function Game() {
     // Send to WebSocket if open
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify(pixelData));
-    } else {
-      // fallback to POST
-      const token = user.access_token;
-
+    } else {// fallback to POST
       try {
         const res = await fetch(`${BACKEND}/game_api/paint/`, {
           method: 'POST',

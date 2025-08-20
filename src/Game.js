@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { BACKEND, WS_BACKEND } from './config';
 import { UserContext } from './App';
+import PlantInteractive from './PlantInteractive';
 
 export default function Game(){
   const { user } = useContext(UserContext);
 
   const PIXEL_SIZE = 5; // circle diameter in px
-  const HALF = PIXEL_SIZE / 2;
 
   const [pixels, setPixels] = useState(new Set());
 
@@ -90,18 +90,11 @@ export default function Game(){
         {[...pixels].map(coord => {
           const [x, y] = coord.split(',').map(Number);
           return (
-            <div
+            <PlantInteractive
               key={coord}
-              style={{
-                position: 'absolute',
-                left: `${x - HALF}px`,   // center the circle at (x,y)
-                top: `${y - HALF}px`,
-                width: `${PIXEL_SIZE}px`,
-                height: `${PIXEL_SIZE}px`,
-                borderRadius: '50%',
-                backgroundColor: 'black',
-                pointerEvents: 'none' // so clicks pass through the pixel divs
-              }}
+              x={x}
+              y={y}
+              size={PIXEL_SIZE}
             />
           );
         })}

@@ -4,6 +4,7 @@ import { GOOGLE_CLIENT_ID } from './config';
 import WelcomeBanner from './WelcomeBanner.js'
 import LoginButton from './LoginButton.js';
 import Game from './Game.js';
+import { WebSocketProvider } from './WebSocketContext.js';
 
 export const UserContext = createContext(null);
 
@@ -13,13 +14,15 @@ export default function App() {
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-        <div style={{ padding: '2rem', textAlign: 'center' }}>
-          <WelcomeBanner />
-          <LoginButton />
-          <div style={{ filter: !user ? 'blur(5px)' : 'none' }}>
-            <Game />
+        <WebSocketProvider>
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
+            <WelcomeBanner />
+            <LoginButton />
+            <div style={{ filter: !user ? 'blur(5px)' : 'none' }}>
+              <Game />
+            </div>
           </div>
-        </div>
+        </WebSocketProvider>
       </GoogleOAuthProvider>
     </UserContext.Provider>
   );

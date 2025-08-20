@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import { BACKEND, WS_BACKEND } from './config';
 import { UserContext } from './App';
 import PlantInteractive from './PlantInteractive';
+import { useWebSocket } from "./WebSocketContext";
 
 export default function Game() {
   const { user } = useContext(UserContext);
+  const { ws, setWs } = useWebSocket();
 
   const PIXEL_SIZE = 30; // circle diameter in px
 
@@ -26,34 +28,55 @@ export default function Game() {
     fetchData();
   }, []);
 
-
-  // WebSocket setup
+// WebSocket setup
   useEffect(() => {
-    const ws = new WebSocket(`${WS_BACKEND}/ws/pixels/`);
-    socketRef.current = ws;
+    if (!user || ws) return; // only open WS once after login
 
-    ws.onmessage = (event) => {
+    const initWebSocket = async () => {
       try {
-        const pixel = JSON.parse(event.data);
-        setPixels(prev => {
-          // Remove any pixel with same x,y, then add the new one
-          const filtered = prev.filter(
-            p => !(p.x === pixel.x && p.y === pixel.y)
-          );
-          return [...filtered, pixel];
+        // get WS UUID ticket from backend
+        const res = await fetch(`${BACKEND}/api/auth/token/`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${user.access_token}`,
+            "Content-Type": "application/json",
+          },
         });
-      } catch (e) {
-        console.error('ws message parse error', e);
+        const data = await res.json();
+        const ws_uuid = data.uuid;
+
+        // open WebSocket
+        const socket = new WebSocket(`${WS_BACKEND}/ws/pixels/?uuid=${ws_uuid}`);
+
+        socket.onmessage = (event) => {
+          try {
+            const pixel = JSON.parse(event.data);
+            setPixels(prev => {
+              const filtered = prev.filter(
+                p => !(p.x === pixel.x && p.y === pixel.y)
+              );
+              return [...filtered, pixel];
+            });
+          } catch (e) {
+            console.error('ws message parse error', e);
+          }
+        };
+
+        socket.onclose = () => console.log('WebSocket disconnected');
+        socket.onerror = (err) => console.error('WebSocket error:', err);
+
+        setWs(socket); // store in context
+      } catch (err) {
+        console.error("Failed to init WebSocket:", err);
       }
     };
 
-    ws.onclose = () => console.log('WebSocket disconnected');
-    ws.onerror = (err) => console.error('WebSocket error:', err);
+    initWebSocket();
 
     return () => {
-      try { ws.close(); } catch (e) {}
+      if (ws) ws.close();
     };
-  }, []);
+  }, [user, ws]);
 
   const handleClick = async (e) => {
     if (!user) return;
@@ -63,29 +86,13 @@ export default function Game() {
     const y = Math.floor(e.clientY - rect.top);
 
     const pixelData = { x, y, color: '#000000' };
-/*
-    // Optimistic update
-    setPixels(prev => {
-      const filtered = prev.filter(p => !(p.x === x && p.y === y));
-      return [
-        ...filtered,
-        {
-          x,
-          y,
-          size: PIXEL_SIZE,
-          plantedBy: user?.username || "WOLOLO",
-          date: new Date().toISOString(),
-          description: "No info available",
-        }
-      ];
-    })*/;
 
     // Send to WebSocket if open
-    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-      socketRef.current.send(JSON.stringify(pixelData));
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify(pixelData));
     } else {
       // fallback to POST
-      const token = user?.access_token;
+      const token = user.access_token;
 
       try {
         await fetch(`${BACKEND}/game_api/paint/`, {
@@ -111,6 +118,7 @@ export default function Game() {
       }
     }
   };
+
 
   return (
     <div

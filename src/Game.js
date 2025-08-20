@@ -12,17 +12,25 @@ export default function Game() {
 
   const [pixels, setPixels] = useState([]);
 
+  const normalize = (raw) => ({
+    x: raw.x,
+    y: raw.y,
+    owner: raw.owner ?? raw.owner__user__username ?? "Unknown",
+    description: raw.description ?? "",
+    planted_on: raw.planted_on ?? raw.plantedOn ?? "",
+  });
+
+  // use for initial fetch
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const resPixels = await fetch(`${BACKEND}/game_api/pixels/`);
-        const dataPixels = await resPixels.json();
-        setPixels(dataPixels); // now expecting array of pixel objects
+        const res = await fetch(`${BACKEND}/game_api/pixels/`);
+        const data = await res.json();
+        setPixels(data.map(normalize));
       } catch (err) {
         console.error('fetch failed', err);
       }
     };
-
     fetchData();
   }, []);
 
@@ -31,17 +39,7 @@ export default function Game() {
 
     const handleMessage = (event) => {
       try {
-        const raw = JSON.parse(event.data);
-
-        // normalize keys we expect in the UI
-        const pixel = {
-          x: raw.x,
-          y: raw.y,
-          owner: raw.owner ?? raw.owner__user__username ?? "Unknown", // fallback if shape varies
-          description: raw.description ?? "",
-          planted_on: raw.planted_on ?? raw.plantedOn ?? raw.plantedOnIso ?? "",
-        };
-
+        const pixel = normalize(JSON.parse(event.data));
         setPixels(prev => {
           const filtered = prev.filter(p => !(p.x === pixel.x && p.y === pixel.y));
           return [...filtered, pixel];
@@ -72,30 +70,24 @@ export default function Game() {
       const token = user.access_token;
 
       try {
-        await fetch(`${BACKEND}/game_api/paint/`, {
+        const res = await fetch(`${BACKEND}/game_api/paint/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify(pixelData),
+            'Authorization': `Bearer ${user.access_token}`,
+        },
+        body: JSON.stringify(pixelData),
         });
 
-        // Fetch the actual pixel data from backend after saving
-        const res = await fetch(`${BACKEND}/game_api/pixels/?x=${x}&y=${y}`);
-        const savedPixel = await res.json();
-
-        setPixels(prev => {
-          const filtered = prev.filter(p => !(p.x === x && p.y === y));
-          return [...filtered, savedPixel];
-        });
+        const savedPixel = await res.json(); // directly get the pixel
+        setPixels(prev => [...prev.filter(p => p.x !== x || p.y !== y), savedPixel]);
 
       } catch (err) {
         console.error('paint POST/fetch failed', err);
       }
     }
-  };
-
+  }
+  
 
   return (
     <div

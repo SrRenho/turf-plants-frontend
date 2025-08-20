@@ -6,13 +6,11 @@ import { useWebSocket } from "./WebSocketContext";
 
 export default function Game() {
   const { user } = useContext(UserContext);
-  const { ws, setWs } = useWebSocket();
+  const { ws } = useWebSocket();
 
   const PIXEL_SIZE = 30; // circle diameter in px
 
   const [pixels, setPixels] = useState([]);
-
-  const socketRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,55 +26,28 @@ export default function Game() {
     fetchData();
   }, []);
 
-// WebSocket setup
+
   useEffect(() => {
-    if (!user || ws) return; // only open WS once after login
+    if (!ws) return; // wait until WS exists
 
-    const initWebSocket = async () => {
+    const handleMessage = (event) => {
       try {
-        // get WS UUID ticket from backend
-        const res = await fetch(`${BACKEND}/api/auth/token/`, {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${user.access_token}`,
-            "Content-Type": "application/json",
-          },
+        const pixel = JSON.parse(event.data);
+        setPixels(prev => {
+          const filtered = prev.filter(p => !(p.x === pixel.x && p.y === pixel.y));
+          return [...filtered, pixel];
         });
-        const data = await res.json();
-        const ws_uuid = data.uuid;
-
-        // open WebSocket
-        const socket = new WebSocket(`${WS_BACKEND}/ws/pixels/?uuid=${ws_uuid}`);
-
-        socket.onmessage = (event) => {
-          try {
-            const pixel = JSON.parse(event.data);
-            setPixels(prev => {
-              const filtered = prev.filter(
-                p => !(p.x === pixel.x && p.y === pixel.y)
-              );
-              return [...filtered, pixel];
-            });
-          } catch (e) {
-            console.error('ws message parse error', e);
-          }
-        };
-
-        socket.onclose = () => console.log('WebSocket disconnected');
-        socket.onerror = (err) => console.error('WebSocket error:', err);
-
-        setWs(socket); // store in context
-      } catch (err) {
-        console.error("Failed to init WebSocket:", err);
+      } catch (e) {
+        console.error('WS message parse error', e);
       }
     };
 
-    initWebSocket();
+    ws.addEventListener("message", handleMessage);
 
     return () => {
-      if (ws) ws.close();
+      ws.removeEventListener("message", handleMessage);
     };
-  }, [user, ws]);
+  }, [ws]);
 
   const handleClick = async (e) => {
     if (!user) return;
@@ -85,7 +56,7 @@ export default function Game() {
     const x = Math.floor(e.clientX - rect.left);
     const y = Math.floor(e.clientY - rect.top);
 
-    const pixelData = { x, y, color: '#000000' };
+    const pixelData = { x, y };
 
     // Send to WebSocket if open
     if (ws && ws.readyState === WebSocket.OPEN) {

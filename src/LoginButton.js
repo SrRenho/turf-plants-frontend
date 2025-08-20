@@ -1,14 +1,14 @@
 import React, { useContext } from 'react';
 import { UserContext } from './App';
-import { BACKEND } from './config';
+import { BACKEND, WS_BACKEND } from './config';
 import { GoogleLogin, googleLogout } from '@react-oauth/google';
 import { useWebSocket } from "./WebSocketContext";
 
 export default function LoginButton() {
-    const { user, setUser } = useContext(UserContext);
-    const { setWs } = useWebSocket();
+  const { user, setUser } = useContext(UserContext);
+  const { setWs } = useWebSocket();
 
-    const handleLoginSuccess = async (credentialResponse) => {
+  const handleLoginSuccess = async (credentialResponse) => {
     try {
       const res = await fetch(`${BACKEND}/google-login/`, {
         method: 'POST',
@@ -22,24 +22,20 @@ export default function LoginButton() {
         const newUser = { ...data.user, access_token: data.access };
         setUser(newUser); // store access token with user
 
-        // get WS UUID ticket from backend
         const wsRes = await fetch(`${BACKEND}/api/auth/token/`, {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${data.access}`,
-            "Content-Type": "application/json",
-          },
+          method: "GET",
+          headers: { "Authorization": `Bearer ${data.access}` },
         });
         const wsData = await wsRes.json();
         const ws_uuid = wsData.uuid;
 
-        // open WebSocket
-        const socket = new WebSocket(`${WS_BACKEND}/ws/game/?uuid=${ws_uuid}`);
+        // open WebSocket immediately after login
+        const socket = new WebSocket(`${WS_BACKEND}/ws/pixels/?uuid=${ws_uuid}`);
         socket.onopen = () => console.log("WS connected!");
-        socket.onmessage = (msg) => console.log("WS message:", msg.data);
         socket.onclose = () => console.log("WS closed");
+        socket.onerror = (err) => console.error("WS error:", err);
 
-        setWs(socket);
+        setWs(socket); // store socket in context
       }       
     } catch (error) {
       console.error('Login failed', error);

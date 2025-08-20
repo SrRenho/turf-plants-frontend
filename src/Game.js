@@ -3,29 +3,28 @@ import { BACKEND, WS_BACKEND } from './config';
 import { UserContext } from './App';
 import PlantInteractive from './PlantInteractive';
 
-export default function Game(){
+export default function Game() {
   const { user } = useContext(UserContext);
 
-  const PIXEL_SIZE = 5; // circle diameter in px
+  const PIXEL_SIZE = 10; // circle diameter in px
 
   const [pixels, setPixels] = useState(new Set());
 
   const socketRef = useRef(null);
 
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const resPixels = await fetch(`${BACKEND}/game_api/pixels/`);
-          const dataPixels = await resPixels.json();
-          setPixels(new Set(dataPixels.map(p => `${p[0]},${p[1]}`)));
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const resPixels = await fetch(`${BACKEND}/game_api/pixels/`);
+        const dataPixels = await resPixels.json();
+        setPixels(new Set(dataPixels.map(p => `${p[0]},${p[1]}`)));
+      } catch (err) {
+        console.error('fetch failed', err);
+      }
+    };
 
-        } catch (err) {
-          console.error('fetch failed', err);
-        }
-      };
-
-      fetchData();
-    }, []);
+    fetchData();
+  }, []);
 
 
   // WebSocket setup
@@ -83,21 +82,37 @@ export default function Game(){
   };
 
   return (
-      <div
-        onClick={handleClick}
-        style={{ width: '90vw', height: '90vh', border: '1px solid black', position: 'relative', userSelect: 'none', cursor: user ? 'crosshair' : 'not-allowed', }}
-      >
-        {[...pixels].map(coord => {
-          const [x, y] = coord.split(',').map(Number);
-          return (
-            <PlantInteractive
-              key={coord}
-              x={x}
-              y={y}
-              size={PIXEL_SIZE}
-            />
-          );
-        })}
-      </div>
+    <div
+      onClick={handleClick}
+      style={{
+        width: '90vw',
+        height: '90vh',
+        border: '1px solid black',
+        position: 'relative',
+        userSelect: 'none',
+        cursor: user ? 'crosshair' : 'not-allowed',
+      }}
+    >
+      {[...pixels].map(coord => {
+        const [x, y] = coord.split(',').map(Number);
+
+        // Placeholder plantInfo for missing data
+        const plantInfo = {
+          x,
+          y,
+          size: PIXEL_SIZE,
+          plantedBy: "Unknown",
+          date: "N/A",
+          description: "No info available",
+        };
+
+        return (
+          <PlantInteractive
+            key={coord}
+            plantInfo={plantInfo}
+          />
+        );
+      })}
+    </div>
   );
 }

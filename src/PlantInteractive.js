@@ -2,7 +2,8 @@ import Plant from "./Plant";
 import { useState } from "react";
 import { PlantTooltip } from "./PlantTooltip";
 
-export default function PlantInteractive({ x, y, size }) {
+export default function PlantInteractive({ plantInfo }) {
+  const { x, y, size } = plantInfo;
   const HALF = size / 2;
   const [hover, setHover] = useState(false);
 
@@ -17,12 +18,16 @@ export default function PlantInteractive({ x, y, size }) {
         borderRadius: "50%",
         backgroundColor: "black",
         pointerEvents: "auto",
+        boxShadow: hover
+          ? "0 0 16px 4px rgba(255, 150, 12, 0.92)" // glow when hovered
+          : "none",
+        transition: "box-shadow 0.2s",
       }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      <Plant x={HALF} y={HALF} size={size} />
-      {hover && <PlantTooltip x={x} y={y} />}
+      <Plant size={size} />
+      {hover && <PlantTooltip plantInfo={plantInfo} />}
     </div>
   );
 }

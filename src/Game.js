@@ -6,7 +6,7 @@ import PlantInteractive from './PlantInteractive';
 export default function Game() {
   const { user } = useContext(UserContext);
 
-  const PIXEL_SIZE = 10; // circle diameter in px
+  const PIXEL_SIZE = 30; // circle diameter in px
 
   const [pixels, setPixels] = useState(new Set());
 

@@ -1,15 +1,16 @@
 export default function Plant({ size }) {
   return (
-    <div
+    <img
+      src="/plant.png" // adjust path as needed
+      alt="Plant"
       style={{
         position: 'absolute',
-        left: `$0px`,
-        top: `$0px`,
+        left: 0,
+        top: 0,
         width: `${size}px`,
         height: `${size}px`,
-        borderRadius: '50%',
-        backgroundColor: 'black',
-        pointerEvents: 'none'
+        pointerEvents: 'none',
+        userSelect: 'none',
       }}
     />
   );

@@ -8,7 +8,7 @@ export default function Game() {
 
   const PIXEL_SIZE = 30; // circle diameter in px
 
-  const [pixels, setPixels] = useState(new Set());
+  const [pixels, setPixels] = useState([]);
 
   const socketRef = useRef(null);
 
@@ -17,7 +17,7 @@ export default function Game() {
       try {
         const resPixels = await fetch(`${BACKEND}/game_api/pixels/`);
         const dataPixels = await resPixels.json();
-        setPixels(new Set(dataPixels.map(p => `${p[0]},${p[1]}`)));
+        setPixels(dataPixels); // now expecting array of pixel objects
       } catch (err) {
         console.error('fetch failed', err);
       }
@@ -35,8 +35,13 @@ export default function Game() {
     ws.onmessage = (event) => {
       try {
         const pixel = JSON.parse(event.data);
-        const key = `${pixel.x},${pixel.y}`;
-        setPixels(prev => new Set(prev).add(key));
+        setPixels(prev => {
+          // Remove any pixel with same x,y, then add the new one
+          const filtered = prev.filter(
+            p => !(p.x === pixel.x && p.y === pixel.y)
+          );
+          return [...filtered, pixel];
+        });
       } catch (e) {
         console.error('ws message parse error', e);
       }
@@ -50,7 +55,7 @@ export default function Game() {
     };
   }, []);
 
-  const handleClick = (e) => {
+  const handleClick = async (e) => {
     if (!user) return;
 
     const rect = e.currentTarget.getBoundingClientRect();
@@ -58,27 +63,53 @@ export default function Game() {
     const y = Math.floor(e.clientY - rect.top);
 
     const pixelData = { x, y, color: '#000000' };
+/*
+    // Optimistic update
+    setPixels(prev => {
+      const filtered = prev.filter(p => !(p.x === x && p.y === y));
+      return [
+        ...filtered,
+        {
+          x,
+          y,
+          size: PIXEL_SIZE,
+          plantedBy: user?.username || "WOLOLO",
+          date: new Date().toISOString(),
+          description: "No info available",
+        }
+      ];
+    })*/;
 
-    // Try WebSocket first
+    // Send to WebSocket if open
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
       socketRef.current.send(JSON.stringify(pixelData));
     } else {
       // fallback to POST
       const token = user?.access_token;
 
-      fetch(`${BACKEND}/game_api/paint/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ x, y, color: pixelData.color }),
-      })
-      .catch(err => console.error('paint POST failed', err));
-    }
+      try {
+        await fetch(`${BACKEND}/game_api/paint/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(pixelData),
+        });
 
-    // Optimistically update local state
-    setPixels(prev => new Set(prev).add(`${x},${y}`));
+        // Fetch the actual pixel data from backend after saving
+        const res = await fetch(`${BACKEND}/game_api/pixels/?x=${x}&y=${y}`);
+        const savedPixel = await res.json();
+
+        setPixels(prev => {
+          const filtered = prev.filter(p => !(p.x === x && p.y === y));
+          return [...filtered, savedPixel];
+        });
+
+      } catch (err) {
+        console.error('paint POST/fetch failed', err);
+      }
+    }
   };
 
   return (
@@ -93,22 +124,21 @@ export default function Game() {
         cursor: user ? 'crosshair' : 'not-allowed',
       }}
     >
-      {[...pixels].map(coord => {
-        const [x, y] = coord.split(',').map(Number);
-
-        // Placeholder plantInfo for missing data
+      {pixels.map(pixel => {
         const plantInfo = {
-          x,
-          y,
+          x: pixel.x,
+          y: pixel.y,
           size: PIXEL_SIZE,
-          plantedBy: "Unknown",
-          date: "N/A",
-          description: "No info available",
+          plantedBy: pixel.owner__user__username || "Unknown",
+          date: pixel.planted_on || "N/A",
+          description: pixel.description || "No info available",
         };
+
+        const key = `${pixel.x},${pixel.y}`;
 
         return (
           <PlantInteractive
-            key={coord}
+            key={key}
             plantInfo={plantInfo}
           />
         );

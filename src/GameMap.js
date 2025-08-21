@@ -1,4 +1,4 @@
-export default function GameMap({ width, height, onTileClick, children }) {
+export default function GameMap({ onTileClick, children }) {
   const handleClick = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = Math.floor(e.clientX - rect.left);
@@ -10,12 +10,15 @@ export default function GameMap({ width, height, onTileClick, children }) {
     <div
       onClick={handleClick}
       style={{
-        width,
-        height,
+        width: "3000px",
+        height: "3000px",
         border: "1px solid black",
         position: "relative",
         userSelect: "none",
         cursor: "crosshair",
+        backgroundImage: 'url("/grass-background.jpg")', // path relative to public/
+        backgroundSize: "auto",
+        backgroundRepeat: "repeat",
       }}
     >
       {children}

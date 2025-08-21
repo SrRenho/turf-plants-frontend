@@ -3,26 +3,16 @@ import { usePaintPixel } from './usePaintPixel';
 import PlantInteractive from './PlantInteractive';
 import { useWebSocket } from "./WebSocketContext";
 import { useAuth } from './AuthProvider';        
+import GameMap from "./GameMap";
 
 export default function Game() {
   const { user } = useAuth();
   const { ws } = useWebSocket();
-
   const [pixels, addPixel] = usePixels(ws);
-  const handleClick = usePaintPixel(user, ws, addPixel);
+  const handlePaint = usePaintPixel(user, ws, addPixel);
 
   return (
-    <div
-      onClick={handleClick}
-      style={{
-        width: "90vw",
-        height: "90vh",
-        border: "1px solid black",
-        position: "relative",
-        userSelect: "none",
-        cursor: "crosshair",
-      }}
-    >
+    <GameMap width="90vw" height="90vh" onTileClick={handlePaint}>
       {pixels.map(pixel => (
         <PlantInteractive
           key={`${pixel.x},${pixel.y}`}
@@ -35,6 +25,7 @@ export default function Game() {
           }}
         />
       ))}
-    </div>
+    </GameMap>
   );
 }
+

@@ -1,12 +1,8 @@
 import { paintPixel } from "./game_api";
 
 export function usePaintPixel(user, ws, addPixel) {
-  return async function handleClick(e) {
+  return async function handlePaint({ x, y }) {
     if (!user) return;
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = Math.floor(e.clientX - rect.left);
-    const y = Math.floor(e.clientY - rect.top);
 
     if (ws?.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({ x, y }));
@@ -20,3 +16,4 @@ export function usePaintPixel(user, ws, addPixel) {
     }
   };
 }
+

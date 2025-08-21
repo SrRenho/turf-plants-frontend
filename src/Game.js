@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { BACKEND } from './config';
-import { UserContext } from './App';
 import PlantInteractive from './PlantInteractive';
 import { useWebSocket } from "./WebSocketContext";
+import { useAuth } from './AuthProvider';     
 
 export default function Game() {
-  const { user } = useContext(UserContext);
+  const { user } = useAuth();
   const { ws } = useWebSocket();
 
   const PIXEL_SIZE = 30; // circle diameter in px
@@ -95,7 +95,7 @@ export default function Game() {
         border: '1px solid black',
         position: 'relative',
         userSelect: 'none',
-        cursor: user ? 'crosshair' : 'not-allowed',
+        cursor: 'crosshair',
       }}
     >
       {pixels.map(pixel => {

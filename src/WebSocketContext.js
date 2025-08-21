@@ -1,11 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useUser } from "./UserContext";
+import { useAuth } from "./AuthProvider";
 import { BACKEND, WS_BACKEND } from './config';
 
 const WebSocketContext = createContext(null);
 
 export function WebSocketProvider({ children }) {
-  const { user } = useUser(); // react to user login
+  const { user } = useAuth(); // react to user login
   const [ws, setWs] = useState(null);
 
   useEffect(() => {

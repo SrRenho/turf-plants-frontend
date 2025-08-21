@@ -1,49 +1,20 @@
-import React, { useContext } from 'react';
-import { UserContext } from './App';
-import { BACKEND } from './config';
-import { GoogleLogin, googleLogout } from '@react-oauth/google';
+import { GoogleLogin } from "@react-oauth/google";
+import { useAuth } from "./AuthProvider";
 
 export default function LoginButton() {
-  const { user, setUser } = useContext(UserContext);
+  const { user, login, logout } = useAuth();
 
-  const handleLoginSuccess = async (credentialResponse) => {
-    try {
-      const res = await fetch(`${BACKEND}/google-login/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ access_token: credentialResponse.credential }),
-      });
-      const data = await res.json();
-      if (data.access && data.user) {
-        setUser({ ...data.user, access_token: data.access });
-      }
-    } catch (err) {
-      console.error("Login failed", err);
-    }
-  };
-
-  const handleLogout = () => {
-    setUser(null);
-    googleLogout();
-  };
-
-  return (
-    <>
-      {!user ? (
-        <GoogleLogin
-          onSuccess={handleLoginSuccess}
-          onError={() => console.log('Login Failed')}
-          useOneTap={false}
-        />
-      ) : (
-        <button
-          onClick={handleLogout}
-          style={{ marginTop: '1rem', padding: '0.5rem 1rem' }}
-        >
-          Logout
-        </button>
-      )}
-    </>
+  return !user ? (
+    <GoogleLogin
+      onSuccess={login}
+      onError={() => console.log("Login Failed")}
+      useOneTap={false}
+    />
+  ) : (
+    <button onClick={logout} style={{ marginTop: "1rem", padding: "0.5rem 1rem" }}>
+      Logout
+    </button>
   );
 }
+
 

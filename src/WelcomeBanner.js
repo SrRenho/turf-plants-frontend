@@ -1,9 +1,8 @@
-import React, { useContext } from 'react';
-import { UserContext } from './App';
+import { useAuth } from "./AuthProvider";
 
 export default function WelcomeBanner() {
-    const { user } = useContext(UserContext);
+    const { user } = useAuth();
     return (
-        <h1>{user ? `Hello ${user.first_name || user.username || user.name}` : 'Hello Guest'}</h1>
+        <h1>{user ? `Hello ${user.first_name || user.username || user.name}` : 'Hello. Login to play.'}</h1>
     );
 }

@@ -1,18 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { BACKEND } from './config';
-
+import { useState, useEffect } from "react";
+import { fetchPixels } from "./game_api";
 
 export function usePixels(ws) {
   const [pixels, setPixels] = useState([]);
-
   const addPixel = (pixel) => setPixels(prev => [...prev, pixel]);
 
-  // initial fetch
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`${BACKEND}/game_api/pixels/`);
-        const data = await res.json();
+        const data = await fetchPixels();
         setPixels(data);
       } catch (err) {
         console.error("fetch failed", err);
@@ -20,7 +16,6 @@ export function usePixels(ws) {
     })();
   }, []);
 
-  // websocket updates
   useEffect(() => {
     if (!ws) return;
 

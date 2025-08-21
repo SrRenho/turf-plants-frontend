@@ -1,4 +1,4 @@
-import { BACKEND } from "./config"; 
+import { paintPixel } from "./game_api";
 
 export function usePaintPixel(user, ws, addPixel) {
   return async function handleClick(e) {
@@ -8,21 +8,11 @@ export function usePaintPixel(user, ws, addPixel) {
     const x = Math.floor(e.clientX - rect.left);
     const y = Math.floor(e.clientY - rect.top);
 
-    const pixelData = { x, y };
-
     if (ws?.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify(pixelData));
+      ws.send(JSON.stringify({ x, y }));
     } else {
       try {
-        const res = await fetch(`${BACKEND}/game_api/paint/`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${user.access_token}`,
-          },
-          body: JSON.stringify(pixelData),
-        });
-        const savedPixel = await res.json();
+        const savedPixel = await paintPixel(user, x, y);
         addPixel(savedPixel);
       } catch (err) {
         console.error("paint POST/fetch failed", err);

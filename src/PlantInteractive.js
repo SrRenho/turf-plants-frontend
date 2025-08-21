@@ -3,7 +3,8 @@ import { useState } from "react";
 import { PlantTooltip } from "./PlantTooltip";
 
 export default function PlantInteractive({ plantInfo }) {
-  const { x, y, size } = plantInfo;
+  const { x, y } = plantInfo;
+  const size = 30; // circle diameter in px
   const HALF = size / 2;
   const [hover, setHover] = useState(false);
 
@@ -27,7 +28,7 @@ export default function PlantInteractive({ plantInfo }) {
       onMouseLeave={() => setHover(false)}
     >
       <Plant size={size} />
-      {hover && <PlantTooltip plantInfo={plantInfo} />}
+      {hover && <PlantTooltip plantInfo={plantInfo} size={size} />}
     </div>
   );
 }

@@ -1,7 +1,7 @@
-export default function Plant({ size }) {
+export default function Plant({ plantInfo, size }) {
   return (
     <img
-      src="/plant.png" // adjust path as needed
+      src="/plant.png"
       alt="Plant"
       style={{
         position: 'absolute',

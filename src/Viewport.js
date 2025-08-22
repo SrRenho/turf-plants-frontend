@@ -71,6 +71,11 @@ export default function Viewport({ width, height, layerWidth, layerHeight, child
     });
   };
 
+  const initialPos = {
+    x: -layerWidth  / 2,
+    y: -layerHeight / 2,
+  };
+
   return (
     <div style={{ width, height, border: '1px solid black' }}>
       <Stage
@@ -83,6 +88,8 @@ export default function Viewport({ width, height, layerWidth, layerHeight, child
         onDragEnd={handleDragEnd}
         onWheel={handleWheel}
         style={{ cursor: 'grab' }}
+        x={initialPos.x}
+        y={initialPos.y}
       >
         {children}
       </Stage>

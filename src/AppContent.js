@@ -10,15 +10,15 @@ import Footer from './Footer.js';
 export default function AppContent() {
     return (
         <AuthProvider>
+            <AuthGate>
             <div style={{ padding: '2rem' }}>
                 <WelcomeBanner />
                 <LoginButton />
-                <AuthGate>
-                    <WebSocketProvider>
-                        <Game />
-                    </WebSocketProvider>
-                </AuthGate>
+                <WebSocketProvider>
+                    <Game />
+                </WebSocketProvider>
             </div>
+            </AuthGate>
             <Footer />
         </AuthProvider>
   );

@@ -26,9 +26,9 @@ export default function PlantTooltip({ visible, info, pos }) {
           pointerEvents: "auto" // make interactive only if you switch wrapper to allow it
         }}
       >
-        <div>({info.x}, {info.y})</div>
+        <div>({info.x.toFixed(1)}, {info.y.toFixed(1)})</div>
         <div>Planted by: {info.plantedBy}</div>
-        <div>On: {info.date}</div>
+        <div>On: {new Date(info.date).toLocaleDateString("en-GB")}</div>
         <div>{info.description}</div>
       </div>
     </div>

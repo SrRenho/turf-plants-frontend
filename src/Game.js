@@ -16,26 +16,28 @@ export default function Game() {
 
   return (
     <GameUIProvider>
-      <Viewport width={700} height={700} layerWidth={3000} layerHeight={3000}>
-        <GameMap onTileClick={handlePaint}>
-          {pixels.map((pixel) =>
-            pixel.pending ? (
-              <PendingPlant key={`pending-${pixel.x},${pixel.y}`} plantInfo = {{x : pixel.x, y : pixel.y}} />
-            ) : (
-              <PlantInteractive
-                key={`${pixel.x},${pixel.y}`}
-                plantInfo={{
-                  x: pixel.x,
-                  y: pixel.y,
-                  plantedBy: pixel.owner,
-                  date: pixel.planted_on,
-                  description: pixel.description,
-                }}
-              />
-            )
-          )}
-        </GameMap>
-      </Viewport>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <Viewport width={1200} height={700} layerWidth={10000} layerHeight={10000}>
+          <GameMap onTileClick={handlePaint}>
+            {pixels.map((pixel) =>
+              pixel.pending ? (
+                <PendingPlant key={`pending-${pixel.x},${pixel.y}`} plantInfo = {{x : pixel.x, y : pixel.y}} />
+              ) : (
+                <PlantInteractive
+                  key={`${pixel.x},${pixel.y}`}
+                  plantInfo={{
+                    x: pixel.x,
+                    y: pixel.y,
+                    plantedBy: pixel.owner,
+                    date: pixel.planted_on,
+                    description: pixel.description,
+                  }}
+                />
+              )
+            )}
+          </GameMap>
+        </Viewport>
+      </div>
     </GameUIProvider>
   );
 }

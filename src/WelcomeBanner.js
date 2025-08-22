@@ -3,6 +3,6 @@ import { useAuth } from "./AuthProvider";
 export default function WelcomeBanner() {
     const { user } = useAuth();
     return (
-        <h1>{user ? `Hello ${user.first_name || user.username || user.name}` : 'Hello. Login to play.'}</h1>
+        <h3>{user ? `Hello ${user.first_name || user.username || user.name}` : 'Hello. Login to play.'}</h3>
     );
 }

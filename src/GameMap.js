@@ -1,4 +1,4 @@
-import { Layer, Image as KonvaImage  } from 'react-konva';
+import { Layer, Rect  } from 'react-konva';
 import useImageLoader from './useImageLoader.js';
 
 export default function GameMap({ onTileClick, children }) {
@@ -14,10 +14,11 @@ export default function GameMap({ onTileClick, children }) {
 
   return (
       <Layer onClick={handleClick}>
-        <KonvaImage 
-          image={image}
-          width={3000}
-          height={3000}
+        <Rect
+          width={10000}
+          height={10000}
+          fillPatternImage={image}
+          fillPatternRepeat="repeat"
         />
         {children}
       </Layer>

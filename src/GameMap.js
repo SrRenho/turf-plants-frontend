@@ -8,10 +8,10 @@ export default function GameMap({ onTileClick, children }) {
   const handleClick = (e) => {
     const stage = e.target.getStage();
     const pointerPosition = stage.getPointerPosition(); // Get click position relative to Stage
-    const x = Math.floor(pointerPosition.x);
-    const y = Math.floor(pointerPosition.y);
+   // const x = Math.floor(pointerPosition.x);
+   // const y = Math.floor(pointerPosition.y);
 
-    onTileClick({ x: x, y: y });
+    onTileClick({ x: pointerPosition.x, y: pointerPosition.y });
   };
 
   return (

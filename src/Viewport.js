@@ -1,9 +1,11 @@
 import React, { useRef, useCallback } from 'react';
 import { Stage } from 'react-konva';
+import { useAuth } from './AuthProvider';
 
 export default function Viewport({ width, height, layerWidth, layerHeight, children }) {
   const stageRef = useRef(null);
   const rafRef = useRef(0); // for coalescing wheel events
+  const { user } = useAuth(); // Assuming useAuth is available in this context
 
   const stageSize = { width, height };
   const layerSize = { width: layerWidth, height: layerHeight };
@@ -32,7 +34,7 @@ export default function Viewport({ width, height, layerWidth, layerHeight, child
     e.target.getStage().container().style.cursor = 'grabbing';
   };
   const handleDragEnd = (e) => {
-    e.target.getStage().container().style.cursor = 'grab';
+    e.target.getStage().container().style.cursor = user? 'crosshair' : 'grab';
   };
 
   const handleWheel = (e) => {
@@ -87,7 +89,7 @@ export default function Viewport({ width, height, layerWidth, layerHeight, child
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onWheel={handleWheel}
-        style={{ cursor: 'grab' }}
+        style={{ cursor: user? 'crosshair' : 'grab' }}
         x={initialPos.x}
         y={initialPos.y}
       >

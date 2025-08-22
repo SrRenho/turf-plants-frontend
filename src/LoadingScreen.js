@@ -5,7 +5,7 @@ import Footer from "./Footer";
 export default function LoadingScreen() {
     return (
         <>
-        <main style={{textAlign: 'center', marginTop: '50px'}}>
+        <main style={{textAlign: 'center', marginTop: '50px', fontSize: '2rem'}}>
             Server loading<Dots /><br/>
             No one joined for a while so the server was sleeping.<br/>
             Free tier hosting servers may take a minute to wake up!<br/>

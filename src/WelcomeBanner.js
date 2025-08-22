@@ -3,6 +3,6 @@ import { useAuth } from "./AuthProvider";
 export default function WelcomeBanner() {
     const { user } = useAuth();
     return (
-        <h3>{user ? `Hello ${user.first_name || user.username || user.name}` : 'Hello. Login to play.'}</h3>
+        <h3  style={{ textAlign: "center" }}>{user ? `Hello ${user.first_name || user.username || user.name}` : 'Login to plant!'}</h3>
     );
 }

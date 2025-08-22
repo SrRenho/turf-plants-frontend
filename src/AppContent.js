@@ -10,7 +10,7 @@ import Footer from './Footer.js';
 export default function AppContent() {
     return (
         <AuthProvider>
-            <div style={{ padding: '2rem', textAlign: 'center' }}>
+            <div style={{ padding: '2rem' }}>
                 <WelcomeBanner />
                 <LoginButton />
                 <AuthGate>

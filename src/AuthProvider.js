@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { GoogleOAuthProvider, googleLogout } from "@react-oauth/google";
 import { BACKEND, GOOGLE_CLIENT_ID } from "./config";
 
@@ -6,6 +6,12 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+
+  // load user from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("auth_user");
+    if (saved) setUser(JSON.parse(saved));
+  }, []);
 
   const login = async (credentialResponse) => {
     try {
@@ -16,7 +22,9 @@ export function AuthProvider({ children }) {
       });
       const data = await res.json();
       if (data.access && data.user) {
-        setUser({ ...data.user, access_token: data.access });
+        const userData = { ...data.user, access_token: data.access };
+        setUser(userData);
+        localStorage.setItem("auth_user", JSON.stringify(userData)); // persist
       }
     } catch (err) {
       console.error("Login failed", err);
@@ -25,6 +33,7 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem("auth_user"); // clear storage
     googleLogout();
   };
 

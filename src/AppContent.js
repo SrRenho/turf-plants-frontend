@@ -4,6 +4,8 @@ import LoginButton from './LoginButton.js';
 import Game from './Game.js';
 import { WebSocketProvider } from './WebSocketContext.js';
 import { AuthGate } from './AuthGate.js';
+import Footer from './Footer.js';
+
 
 export default function AppContent() {
     return (
@@ -17,6 +19,7 @@ export default function AppContent() {
                     </WebSocketProvider>
                 </AuthGate>
             </div>
+            <Footer />
         </AuthProvider>
   );
 }

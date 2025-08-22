@@ -1,4 +1,4 @@
-import { Stage, Layer, Image as KonvaImage  } from 'react-konva';
+import { Layer, Image as KonvaImage  } from 'react-konva';
 import useImageLoader from './useImageLoader.js';
 
 export default function GameMap({ onTileClick, children }) {

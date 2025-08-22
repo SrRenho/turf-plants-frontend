@@ -6,10 +6,8 @@ export default function GameMap({ onTileClick, children }) {
   const image = useImageLoader('/grass-background.jpg');
 
   const handleClick = (e) => {
-    const stage = e.target.getStage();
-    const pointerPosition = stage.getPointerPosition(); // Get click position relative to Stage
-   // const x = Math.floor(pointerPosition.x);
-   // const y = Math.floor(pointerPosition.y);
+    const layer = e.target.getLayer();
+    const pointerPosition = layer.getRelativePointerPosition();
 
     onTileClick({ x: pointerPosition.x, y: pointerPosition.y });
   };

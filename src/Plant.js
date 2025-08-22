@@ -1,17 +1,19 @@
-export default function Plant({ plantInfo, size }) {
+import { Image as KonvaImage  } from "react-konva";
+import useImageLoader from "./useImageLoader.js";
+
+export default function Plant({ size }) {
+  const image = useImageLoader("/plant.png");
+
+  if (!image) return null; // wait until loaded
+
   return (
-    <img
-      src="/plant.png"
-      alt="Plant"
-      style={{
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        width: `${size}px`,
-        height: `${size}px`,
-        pointerEvents: 'none',
-        userSelect: 'none',
-      }}
+    <KonvaImage 
+      image={image}
+      x={-size/2}   // move left by half width
+      y={-size/2}
+      width={size}
+      height={size}
+      listening={false} // pointerEvents: none
     />
   );
 }

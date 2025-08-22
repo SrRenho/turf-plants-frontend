@@ -1,27 +1,27 @@
+import { Stage, Layer, Image as KonvaImage  } from 'react-konva';
+import useImageLoader from './useImageLoader.js';
+
 export default function GameMap({ onTileClick, children }) {
+
+  const image = useImageLoader('/grass-background.jpg');
+
   const handleClick = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = Math.floor(e.clientX - rect.left);
-    const y = Math.floor(e.clientY - rect.top);
-    onTileClick({ x, y });
+    const stage = e.target.getStage();
+    const pointerPosition = stage.getPointerPosition(); // Get click position relative to Stage
+    const x = Math.floor(pointerPosition.x);
+    const y = Math.floor(pointerPosition.y);
+
+    onTileClick({ x: x, y: y });
   };
 
   return (
-    <div
-      onClick={handleClick}
-      style={{
-        width: "3000px",
-        height: "3000px",
-        border: "1px solid black",
-        position: "relative",
-        userSelect: "none",
-        cursor: "crosshair",
-        backgroundImage: 'url("/grass-background.jpg")', // path relative to public/
-        backgroundSize: "auto",
-        backgroundRepeat: "repeat",
-      }}
-    >
-      {children}
-    </div>
+      <Layer onClick={handleClick}>
+        <KonvaImage 
+          image={image}
+          width={3000}
+          height={3000}
+        />
+        {children}
+      </Layer>
   );
 }

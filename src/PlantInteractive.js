@@ -1,34 +1,37 @@
-import Plant from "./Plant";
 import { useState } from "react";
-import { PlantTooltip } from "./PlantTooltip";
+import { Group, Circle } from "react-konva";
+import Plant from "./Plant";
+import { useTooltip } from "./GameUIContext";
 
 export default function PlantInteractive({ plantInfo }) {
   const { x, y } = plantInfo;
-  const size = 30; // circle diameter in px
+  const size = 30;
   const HALF = size / 2;
   const [hover, setHover] = useState(false);
+  const { show, hide } = useTooltip();
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        left: `${x - HALF}px`,
-        top: `${y - HALF}px`,
-        width: `${size}px`,
-        height: `${size}px`,
-        borderRadius: "50%",
-        backgroundColor: "black",
-        pointerEvents: "auto",
-        boxShadow: hover
-          ? "0 0 16px 4px rgba(255, 150, 12, 0.92)" // glow when hovered
-          : "none",
-        transition: "box-shadow 0.2s",
+    <Group
+      x={x}
+      y={y}
+      onMouseEnter={() => {
+        setHover(true);
+        show(plantInfo);
       }}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
+      onMouseLeave={() => {
+        setHover(false);
+        hide();
+      }}
     >
+      {/* Glow / background circle */}
+      <Circle
+        radius={HALF}
+        fill="rgba(255, 255, 255, 1)" 
+        shadowColor="rgba(255, 150, 12, 1)"
+        shadowBlur={hover ? 30 : 0}
+        shadowOpacity={hover ? 1 : 0}
+      />
       <Plant size={size} />
-      {hover && <PlantTooltip plantInfo={plantInfo} size={size} />}
-    </div>
+    </Group>
   );
 }

@@ -1,28 +1,36 @@
-export function PlantTooltip({ plantInfo }) {
-  const { x, y, plantedBy, date, description } = plantInfo;
+export default function PlantTooltip({ visible, info, pos }) {
+  if (!visible || !info) return null;
+
+  const { x: mouseX, y: mouseY } = pos;
 
   return (
-    <span
+    <div
       style={{
-        position: "absolute",
-        left: "50%",
-        top: 0,
-        transform: "translate(-50%, -110%)", // move up by 100% of height + 10%
-        marginBottom: "8px", // extra space above cursor
-        background: "white",
-        border: "1px solid black",
-        padding: "8px 16px",
-        fontSize: "1.1rem",
-        borderRadius: "8px",
-        pointerEvents: "none",
+        position: "fixed",
+        left: mouseX,
+        top: mouseY,
+        transform: "translate(-50%, -120%)",
+        pointerEvents: "none", // let pointer through by default
+        zIndex: 99999,
         whiteSpace: "nowrap",
-        zIndex: 9999,
       }}
     >
-      ({x}, {y})<br />
-      Planted by: {plantedBy}<br />
-      On: {date}<br />
-      {description}
-    </span>
+      <div
+        style={{
+          background: "white",
+          border: "1px solid rgba(0,0,0,0.9)",
+          padding: "8px 12px",
+          borderRadius: 8,
+          fontSize: "14px",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+          pointerEvents: "auto" // make interactive only if you switch wrapper to allow it
+        }}
+      >
+        <div>({info.x}, {info.y})</div>
+        <div>Planted by: {info.plantedBy}</div>
+        <div>On: {info.date}</div>
+        <div>{info.description}</div>
+      </div>
+    </div>
   );
 }

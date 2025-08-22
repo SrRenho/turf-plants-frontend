@@ -1,4 +1,4 @@
-import { BACKEND } from './config';
+import { BACKEND } from './config.js';
 import useServerReady from './useServerReady.js';
 import LoadingScreen from './LoadingScreen.js';
 import AppContent from './AppContent.js'; 

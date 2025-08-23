@@ -31,6 +31,8 @@ export default function PlantTooltip({ visible, info, pos }) {
             ({info.x.toFixed(1)}, {info.y.toFixed(1)})
           </span>
           <br />
+        { info.description ? (
+          <>
           <span style={{ fontSize: '1.1em', margin: '0.5em 0' }}>
             “{info.description}”
           </span>
@@ -39,6 +41,15 @@ export default function PlantTooltip({ visible, info, pos }) {
           <span style={{ fontStyle: 'italic', textAlign: 'right', display: 'block' }}>
             — {info.plantedBy}, {new Date(info.date).toLocaleDateString("en-GB")}
           </span>
+          </>
+          )
+          :
+          (          
+            <span style={{ fontStyle: 'italic', textAlign: 'right', display: 'block' }}>
+            Planted by {info.plantedBy}, {new Date(info.date).toLocaleDateString("en-GB")}
+            </span>
+          ) 
+          }
         </div>
       </div>
     </div>

@@ -6,14 +6,14 @@ export async function fetchPixels() {
   return await res.json();
 }
 
-export async function paintPixel(user, x, y) {
+export async function paintPixel(user, x, y, description) {
   const res = await fetch(`${BACKEND}/game_api/paint/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${user.access_token}`,
     },
-    body: JSON.stringify({ x, y }),
+    body: JSON.stringify({ x, y, description }),
   });
 
   if (!res.ok) throw new Error("Failed to paint pixel");

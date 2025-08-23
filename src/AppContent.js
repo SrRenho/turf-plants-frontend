@@ -5,7 +5,7 @@ import Game from './Game.js';
 import { WebSocketProvider } from './WebSocketContext.js';
 import { AuthGate } from './AuthGate.js';
 import Footer from './Footer.js';
-
+import { GameUIProvider } from "./GameUIContext";
 
 export default function AppContent() {
     return (
@@ -15,7 +15,9 @@ export default function AppContent() {
                 <WelcomeBanner />
                 <LoginButton />
                 <WebSocketProvider>
-                    <Game />
+                    <GameUIProvider>
+                        <Game />
+                    </GameUIProvider>
                 </WebSocketProvider>
             </div>
             </AuthGate>

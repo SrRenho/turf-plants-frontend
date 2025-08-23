@@ -26,10 +26,20 @@ export default function PlantTooltip({ visible, info, pos }) {
           pointerEvents: "auto" // make interactive only if you switch wrapper to allow it
         }}
       >
-        <div>({info.x.toFixed(1)}, {info.y.toFixed(1)})</div>
-        <div>Planted by: {info.plantedBy}</div>
-        <div>On: {new Date(info.date).toLocaleDateString("en-GB")}</div>
-        <div>{info.description}</div>
+        <div style={{ width: '100%', fontFamily: 'sans-serif' }}>
+          <span style={{ fontSize: '0.8em', color: 'gray' }}>
+            ({info.x.toFixed(1)}, {info.y.toFixed(1)})
+          </span>
+          <br />
+          <span style={{ fontSize: '1.1em', margin: '0.5em 0' }}>
+            “{info.description}”
+          </span>
+          <br />
+          <br />
+          <span style={{ fontStyle: 'italic', textAlign: 'right', display: 'block' }}>
+            — {info.plantedBy}, {new Date(info.date).toLocaleDateString("en-GB")}
+          </span>
+        </div>
       </div>
     </div>
   );

@@ -14,13 +14,23 @@ export default function PlantInteractive({ plantInfo }) {
     <Group
       x={x}
       y={y}
-      onMouseEnter={() => {
+      onMouseEnter={(e) => {
         setHover(true);
         show(plantInfo);
+        const stage = e.target.getStage();
+        if (!stage) return;
+        // save current cursor
+        stage._prevCursor = stage.container().style.cursor;
+        stage.container().style.cursor = 'pointer';
       }}
-      onMouseLeave={() => {
+      onMouseLeave={(e) => {
         setHover(false);
         hide();
+        const stage = e.target.getStage();
+        if (!stage) return;
+        // restore previous cursor
+        stage.container().style.cursor = stage._prevCursor || 'default';
+        delete stage._prevCursor;
       }}
     >
       {/* Glow / background circle */}

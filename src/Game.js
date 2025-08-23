@@ -8,6 +8,8 @@ import Viewport from './Viewport';
 import { usePlantDialog } from "./GameUIContext";
 import PendingPlant from './PendingPlant';
 import ZoomDisplay from './ZoomDisplay';
+import { ToastContainer, toast } from 'react-toastify';
+import { MdWarning } from "react-icons/md";
 
 export default function Game() {
   const { user } = useAuth();
@@ -19,7 +21,7 @@ export default function Game() {
     if (!user) return;
 
     if (tooCloseToExistingPlant(x, y)) {
-      alert("Too close to an existing plant! Please choose another location.");
+      toast.error("Too close to an existing plant! Please choose another location.");      
       return;
     }
 
@@ -40,6 +42,20 @@ export default function Game() {
 
   return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                <ToastContainer
+                  position="top-right"
+                  autoClose={3000}
+                  hideProgressBar
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  pauseOnHover
+                  theme="colored"
+                  stacked
+                  limit={5}
+                  
+                  />
         <div style={{ width: 1200, display: 'flex', justifyContent: 'flex-end' }}>
           <ZoomDisplay />
         </div>

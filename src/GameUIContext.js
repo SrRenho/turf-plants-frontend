@@ -8,6 +8,9 @@ export function GameUIProvider({ children }) {
   const [info, setInfo] = useState(null);
   const [pos, setPos] = useState({ x: -9999, y: -9999 });
 
+
+  const [zoom, setZoom] = useState(100);
+
   useEffect(() => {
     const handleMove = (e) => {
       // Track raw screen coords (viewport)
@@ -30,7 +33,7 @@ export function GameUIProvider({ children }) {
   };
 
   return (
-    <GameUIContext.Provider value={{ show, hide, visible, info, pos }}>
+    <GameUIContext.Provider value={{ show, hide, visible, info, pos, zoom, setZoom }}>
       {children}
       <PlantTooltip visible={visible} info={info} pos={pos} />
     </GameUIContext.Provider>
@@ -39,6 +42,22 @@ export function GameUIProvider({ children }) {
 
 export function useTooltip() {
   const ctx = useContext(GameUIContext);
-  if (!ctx) throw new Error("useTooltip must be used within TooltipProvider");
-  return ctx;
+  if (!ctx) throw new Error("useTooltip must be used within GameUIProvider");
+
+  return {
+    show: ctx.show,
+    hide: ctx.hide,
+    visible: ctx.visible,
+    info: ctx.info,
+    pos: ctx.pos,
+  };
+}
+
+export function useZoomDisplay() {
+  const ctx = useContext(GameUIContext);
+  if (!ctx) throw new Error("useZoomDisplay must be used within GameUIProvider");
+  return {
+    zoom: ctx.zoom,
+    setZoom: ctx.setZoom
+  };
 }

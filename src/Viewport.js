@@ -1,11 +1,14 @@
 import React, { useRef, useCallback } from 'react';
 import { Stage } from 'react-konva';
 import { useAuth } from './AuthProvider';
+import { useZoomDisplay } from './GameUIContext';
 
 export default function Viewport({ width, height, layerWidth, layerHeight, children }) {
   const stageRef = useRef(null);
   const rafRef = useRef(0); // for coalescing wheel events
   const { user } = useAuth(); // Assuming useAuth is available in this context
+
+  const { setZoom } = useZoomDisplay(); 
 
   const stageSize = { width, height };
   const layerSize = { width: layerWidth, height: layerHeight };
@@ -71,6 +74,8 @@ export default function Viewport({ width, height, layerWidth, layerHeight, child
       stage.position(bound(newPos, newScale));
       stage.batchDraw();
     });
+
+    setZoom(newScale * 100);
   };
 
   const initialPos = {

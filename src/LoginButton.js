@@ -11,7 +11,7 @@ export default function LoginButton() {
       useOneTap={false}
     />
   ) : (
-    <button onClick={logout} style={{ marginRight: 'auto', marginTop: "1rem", padding: "0.5rem 1rem" }}>
+    <button onClick={logout} style={{ marginRight: 'auto', padding: "0.5rem 1rem" }}>
       Logout
     </button>
   );

@@ -11,7 +11,7 @@ export default function AppContent() {
     return (
         <AuthProvider>
             <AuthGate>
-            <div style={{ padding: '2rem' }}>
+            <div style={{ padding: '1rem' }}>
                 <WelcomeBanner />
                 <LoginButton />
                 <WebSocketProvider>

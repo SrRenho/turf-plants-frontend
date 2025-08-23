@@ -7,6 +7,7 @@ import GameMap from "./GameMap";
 import Viewport from './Viewport';
 import { GameUIProvider } from "./GameUIContext";
 import PendingPlant from './PendingPlant';
+import ZoomDisplay from './ZoomDisplay';
 
 export default function Game() {
   const { user } = useAuth();
@@ -16,7 +17,11 @@ export default function Game() {
 
   return (
     <GameUIProvider>
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+    {/* Zoom display aligned to the right edge of the viewport */}
+    <div style={{ width: 1200, display: 'flex', justifyContent: 'flex-end' }}>
+      <ZoomDisplay />
+    </div>
         <Viewport width={1200} height={700} layerWidth={10000} layerHeight={10000}>
           <GameMap onTileClick={handlePaint}>
             {pixels.map((pixel) =>

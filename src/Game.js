@@ -24,9 +24,9 @@ export default function Game() {
     }
 
     const result = await prompt({ x, y });
-    if (result) {
-      handlePaint({x, y}, result);
-  }
+    if (result !== null && result !== undefined)
+      handlePaint({ x, y }, result);
+    
   }
 
   const tooCloseToExistingPlant = (x, y) => {

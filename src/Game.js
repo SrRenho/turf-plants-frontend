@@ -17,10 +17,25 @@ export default function Game() {
   const { prompt } = usePlantDialog();
   const handleClick = async ({x,y}) => {
     if (!user) return;
+
+    if (tooCloseToExistingPlant(x, y)) {
+      alert("Too close to an existing plant! Please choose another location.");
+      return;
+    }
+
     const result = await prompt({ x, y });
     if (result) {
       handlePaint({x, y}, result);
   }
+  }
+
+  const tooCloseToExistingPlant = (x, y) => {
+    const MIN_DISTANCE_SQRD = 100**2; // minimum distance in pixels
+    return pixels.some((pixel) => {
+      const dx = pixel.x - x;
+      const dy = pixel.y - y;
+      return (dx * dx + dy * dy) < MIN_DISTANCE_SQRD;
+    });
   }
 
   return (

@@ -1,7 +1,7 @@
 import { Image as KonvaImage  } from "react-konva";
 import useImageLoader from "./useImageLoader.js";
 
-export default function Plant({ size }) {
+export default function Plant({ size, ...rest }) {
   const image = useImageLoader("/plant.png");
 
   if (!image) return null; // wait until loaded
@@ -14,6 +14,7 @@ export default function Plant({ size }) {
       width={size}
       height={size}
       listening={true} // pointerEvents: none
+      {...rest}
     />
   );
 }

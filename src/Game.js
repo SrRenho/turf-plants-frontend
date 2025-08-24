@@ -9,7 +9,13 @@ import { usePlantDialog } from "./GameUIContext";
 import PendingPlant from './PendingPlant';
 import ZoomDisplay from './ZoomDisplay';
 import { ToastContainer, toast } from 'react-toastify';
-import { MdWarning } from "react-icons/md";
+import useImageLoader from "./useImageLoader.js";
+import { Image as KonvaImage  } from "react-konva";
+
+// ⬇️ added
+import React, { useState } from 'react';
+import { Group } from 'react-konva';
+import Plant from './Plant';
 
 export default function Game() {
   const { user } = useAuth();
@@ -17,6 +23,18 @@ export default function Game() {
   const [pixels, addPixel, addPendingPixel] = usePixels(ws);
   const handlePaint = usePaintPixel(user, ws, addPixel, addPendingPixel);
   const { prompt } = usePlantDialog();
+
+
+  const tempbalbals = useImageLoader("/plant.png");
+
+  // ⬇️ added: track cursor (stage) position
+  const [cursor, setCursor] = useState(null);
+  const handleMouseMove = (e) => {
+    const stage = e.target?.getLayer?.();
+    const pos = stage?.getRelativePointerPosition?.();
+    if (pos) setCursor(pos);
+  };
+
   const handleClick = async ({x,y}) => {
     if (!user) return;
 
@@ -59,8 +77,9 @@ export default function Game() {
         <div style={{ width: 1200, display: 'flex', justifyContent: 'flex-end' }}>
           <ZoomDisplay />
         </div>
+        {/* ⬇️ added onMouseMove */}
         <Viewport width={1200} height={700} layerWidth={10000} layerHeight={10000}>
-          <GameMap onTileClick={handleClick}>
+          <GameMap onTileClick={handleClick} onMouseMove={handleMouseMove}>
             {pixels.map((pixel) =>
               pixel.pending ? (
                 <PendingPlant key={`pending-${pixel.x},${pixel.y}`} plantInfo = {{x : pixel.x, y : pixel.y}} />
@@ -77,9 +96,13 @@ export default function Game() {
                 />
               )
             )}
+
+            {/* ⬇️ ghost Plant that follows cursor; doesn't capture events */}
+            {cursor && (
+                <Plant size={70} opacity={0.5} x={cursor.x - 35} y={cursor.y - 35} listening={false} />
+            )}
           </GameMap>
         </Viewport>
       </div>
   );
 }
-

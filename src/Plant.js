@@ -13,7 +13,7 @@ export default function Plant({ size }) {
       y={-size/2}
       width={size}
       height={size}
-      listening={false} // pointerEvents: none
+      listening={true} // pointerEvents: none
     />
   );
 }

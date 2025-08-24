@@ -33,7 +33,18 @@ export default function PlantTooltip({ visible, info, pos }) {
           <br />
         { info.description ? (
           <>
-          <span style={{ fontSize: '1.1em', margin: '0.5em 0' }}>
+          <span
+            style={{
+              display: 'inline-block',   // allow width
+              maxWidth: '300px',         // adjust to desired "square" width
+              fontSize: '1.1em',
+              margin: '0.5em 0',
+              whiteSpace: 'normal',      // allow wrapping
+              wordWrap: 'break-word',    // break long words
+              wordBreak: 'break-word',   // extra safety for long strings
+              textAlign: 'justify'
+            }}
+          >
             “{info.description}”
           </span>
           <br />

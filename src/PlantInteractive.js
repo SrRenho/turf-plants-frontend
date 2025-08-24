@@ -33,15 +33,7 @@ export default function PlantInteractive({ plantInfo }) {
         delete stage._prevCursor;
       }}
     >
-      {/* Glow / background circle */}
-      <Circle
-        radius={HALF}
-        fill="rgba(255, 255, 255, 1)" 
-        shadowColor="rgba(255, 150, 12, 1)"
-        shadowBlur={hover ? 30 : 0}
-        shadowOpacity={hover ? 1 : 0}
-      />
-      <Plant size={size} />
+      <Plant size={70} hover={hover} />
     </Group>
   );
 }

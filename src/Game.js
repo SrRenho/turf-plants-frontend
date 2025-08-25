@@ -23,9 +23,6 @@ export default function Game() {
   const handlePaint = usePaintPixel(user, ws, addPixel, addPendingPixel);
   const { prompt } = usePlantDialog();
 
-
-  const tempbalbals = useImageLoader("/plant.png");
-
   // ⬇️ added: track cursor (stage) position
   const [cursor, setCursor] = useState(null);
   const handleMouseMove = (e) => {
@@ -91,6 +88,7 @@ export default function Game() {
                     plantedBy: pixel.owner,
                     date: pixel.planted_on,
                     description: pixel.description,
+                    total_xp: pixel.total_xp,
                   }}
                 />
               )

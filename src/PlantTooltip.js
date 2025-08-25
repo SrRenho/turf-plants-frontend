@@ -29,10 +29,12 @@ export default function PlantTooltip({ visible, info, pos }) {
         <div style={{ width: '100%', fontFamily: 'sans-serif' }}>
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8em", color: "gray" }}>
             <span>({info.x.toFixed(1)}, {info.y.toFixed(1)})</span>
-            <span>
-              Lvl: {info.level} &nbsp;
-              Next: {Math.floor(info.xp_into_level)} / {Math.floor(info.xp_until_next)} XP
-            </span>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+              <span>Lvl: {info.level}</span>
+              <span>
+                Next: {Math.floor(info.xp_into_level)} / {Math.floor(info.xp_until_next)} XP
+              </span>
+            </div>
           </div>
           <br />
         { info.description ? (

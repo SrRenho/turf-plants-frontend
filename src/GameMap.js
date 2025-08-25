@@ -2,7 +2,7 @@ import { Layer, Rect } from 'react-konva';
 import useImageLoader from './useImageLoader.js';
 
 export default function GameMap({ onTileClick, children, onMouseMove }) {
-  const image = useImageLoader('/grass-background.jpg');
+  const image = useImageLoader('/grass-background.png');
 
   const handleClick = (e) => {
     const layer = e.target.getLayer();

@@ -16,7 +16,7 @@ export default function Plant({ level=1, ...rest }) {
   const image = useImageLoader("/" + imgName);
   if (!image) return null; // wait until loaded
 
-  const size = 70 + ((200 - 70) * (level - 1)) / 99; // size from 70 to 200 depending on level 1-100
+  const size = 50 + ((200 - 50) * (level - 1)) / 99; // size from 70 to 200 depending on level 1-100
 
   return (
     <KonvaImage 

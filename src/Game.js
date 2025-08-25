@@ -95,10 +95,9 @@ export default function Game() {
 
             {user && cursor && (
             <Plant
-              size={70}
               opacity={0.5}
-              x={cursor.x - 35}
-              y={cursor.y - 35}
+              x={cursor.x - 25}
+              y={cursor.y - 25}
               listening={false}
               ref={node => {
                 if (node && tooCloseToExistingPlant(cursor.x, cursor.y)) {

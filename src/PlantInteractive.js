@@ -5,7 +5,7 @@ import Plant from './Plant';
 import { useTooltip } from './GameUIContext.js';
 
 export default function PlantInteractive({ plantInfo }) {
-  const { x, y } = plantInfo;
+  const { x, y, level } = plantInfo;
   const size = 70;
   const [hover, setHover] = useState(false);
   const groupRef = useRef(null);
@@ -50,7 +50,7 @@ export default function PlantInteractive({ plantInfo }) {
         delete stage._prevCursor;
       }}
     >
-      <Plant size={size} />
+      <Plant size={size} level={level} />
     </Group>
   );
 }

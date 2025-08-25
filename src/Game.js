@@ -95,26 +95,26 @@ export default function Game() {
             )}
 
             {/* ⬇️ ghost Plant that follows cursor; doesn't capture events */}
-            {cursor && (
-<Plant
-  size={70}
-  opacity={0.5}
-  x={cursor.x - 35}
-  y={cursor.y - 35}
-  listening={false}
-  ref={node => {
-    if (node && tooCloseToExistingPlant(cursor.x, cursor.y)) {
-      node.cache();
-    }
-  }}
-  {...(tooCloseToExistingPlant(cursor.x, cursor.y) && {
-    filters: [Konva.Filters.RGBA],
-    red: 255,
-    green: 0,
-    blue: 0,
-    alpha: 0.75,
-  })}
-/>
+            {user && cursor && (
+            <Plant
+              size={70}
+              opacity={0.5}
+              x={cursor.x - 35}
+              y={cursor.y - 35}
+              listening={false}
+              ref={node => {
+                if (node && tooCloseToExistingPlant(cursor.x, cursor.y)) {
+                  node.cache();
+                }
+              }}
+              {...(tooCloseToExistingPlant(cursor.x, cursor.y) && {
+                filters: [Konva.Filters.RGBA],
+                red: 255,
+                green: 0,
+                blue: 0,
+                alpha: 0.75,
+              })}
+            />
             )}
           </GameMap>
         </Viewport>

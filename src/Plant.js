@@ -1,7 +1,7 @@
 import { Image as KonvaImage  } from "react-konva";
 import useImageLoader from "./useImageLoader.js";
 
-export default function Plant({ size, level=1, ...rest }) {
+export default function Plant({ level=1, ...rest }) {
   let imgName;
   if (level <= 3) imgName = "plant.png";
   else if (level <= 9) imgName = "plant2.png";
@@ -15,6 +15,8 @@ export default function Plant({ size, level=1, ...rest }) {
 
   const image = useImageLoader("/" + imgName);
   if (!image) return null; // wait until loaded
+
+  const size = 70 + ((200 - 70) * (level - 1)) / 99; // size from 70 to 200 depending on level 1-100
 
   return (
     <KonvaImage 

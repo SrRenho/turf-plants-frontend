@@ -99,7 +99,7 @@ export default function Game() {
               )
             )}
 
-            {user && cursor && (
+            {user?.seeds && cursor && (
             <Plant
               opacity={0.5}
               x={cursor.x - 25}

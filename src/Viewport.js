@@ -37,7 +37,7 @@ export default function Viewport({ width, height, layerWidth, layerHeight, child
     e.target.getStage().container().style.cursor = 'grabbing';
   };
   const handleDragEnd = (e) => {
-    e.target.getStage().container().style.cursor = user? 'crosshair' : 'grab';
+    e.target.getStage().container().style.cursor = user?.seeds? 'crosshair' : 'grab';
   };
 
   const handleWheel = (e) => {
@@ -94,7 +94,7 @@ export default function Viewport({ width, height, layerWidth, layerHeight, child
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onWheel={handleWheel}
-        style={{ cursor: user? 'crosshair' : 'grab' }}
+        style={{ cursor: user?.seeds ? 'crosshair' : 'grab' }}
         x={initialPos.x}
         y={initialPos.y}
       >

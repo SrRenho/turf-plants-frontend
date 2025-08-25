@@ -29,7 +29,13 @@ export default function Game() {
   };
 
   const handleClick = async ({x,y}) => {
-    if (!user) return;
+    if (!user)
+      return;
+
+    if (user.seeds <= 0) {
+      toast.error("You have no seeds left to plant!");      
+      return;
+    }
 
     if (tooCloseToExistingPlant(x, y)) {
       toast.error("Too close to an existing plant! Please choose another location.");      

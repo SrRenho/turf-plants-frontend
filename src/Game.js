@@ -9,9 +9,6 @@ import { usePlantDialog } from "./GameUIContext";
 import PendingPlant from './PendingPlant';
 import ZoomDisplay from './ZoomDisplay';
 import { ToastContainer, toast } from 'react-toastify';
-import useImageLoader from "./useImageLoader.js";
-
-// ⬇️ added
 import React, { useState } from 'react';
 import Konva from 'konva';
 import Plant from './Plant';
@@ -23,7 +20,7 @@ export default function Game() {
   const handlePaint = usePaintPixel(user, ws, addPixel, addPendingPixel);
   const { prompt } = usePlantDialog();
 
-  // ⬇️ added: track cursor (stage) position
+  // TODO: ZOOMING DOESNT UPDATE THE GHOST PLANT POSITION!!
   const [cursor, setCursor] = useState(null);
   const handleMouseMove = (e) => {
     const stage = e.target?.getLayer?.();
@@ -73,7 +70,6 @@ export default function Game() {
         <div style={{ width: 1200, display: 'flex', justifyContent: 'flex-end' }}>
           <ZoomDisplay />
         </div>
-        {/* ⬇️ added onMouseMove */}
         <Viewport width={1200} height={700} layerWidth={10000} layerHeight={10000}>
           <GameMap onTileClick={handleClick} onMouseMove={handleMouseMove}>
             {pixels.map((pixel) =>
@@ -89,12 +85,14 @@ export default function Game() {
                     date: pixel.planted_on,
                     description: pixel.description,
                     total_xp: pixel.total_xp,
+                    level: pixel.level,
+                    xp_into_level: pixel.xp_into_level,
+                    xp_until_next: pixel.xp_until_next,
                   }}
                 />
               )
             )}
 
-            {/* ⬇️ ghost Plant that follows cursor; doesn't capture events */}
             {user && cursor && (
             <Plant
               size={70}

@@ -14,7 +14,7 @@ import Konva from 'konva';
 import Plant from './Plant';
 
 export default function Game() {
-  const { user, setUser } = useAuth();
+  const { user, decreaseSeed } = useAuth();
   const { ws } = useWebSocket();
   const [pixels, addPixel, addPendingPixel] = usePixels(ws);
   const handlePaint = usePaintPixel(user, ws, addPixel, addPendingPixel);
@@ -45,7 +45,7 @@ export default function Game() {
     const result = await prompt({ x, y });
     if (result !== null && result !== undefined){
       handlePaint({ x, y }, result);
-      setUser(prev => ({ ...prev, seeds: prev.seeds - 1 })); // locally update seed count for better UX
+      decreaseSeed(); // locally update seed count for better UX
     }
   }
 

@@ -29,8 +29,16 @@ export function AuthProvider({ children }) {
     googleLogout();
   };
 
+  // helper to decrease seeds safely
+  const decreaseSeed = (amount = 1) => {
+    setUser(prev => ({
+      ...prev,
+      seeds: Math.max(0, (prev?.seeds || 0) - amount)
+    }));
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, decreaseSeed }}>
       <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
         {children}
       </GoogleOAuthProvider>

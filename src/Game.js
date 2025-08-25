@@ -10,11 +10,10 @@ import PendingPlant from './PendingPlant';
 import ZoomDisplay from './ZoomDisplay';
 import { ToastContainer, toast } from 'react-toastify';
 import useImageLoader from "./useImageLoader.js";
-import { Image as KonvaImage  } from "react-konva";
 
 // ⬇️ added
 import React, { useState } from 'react';
-import { Group } from 'react-konva';
+import Konva from 'konva';
 import Plant from './Plant';
 
 export default function Game() {
@@ -50,7 +49,7 @@ export default function Game() {
   }
 
   const tooCloseToExistingPlant = (x, y) => {
-    const MIN_DISTANCE_SQRD = 100**2; // minimum distance in pixels
+    const MIN_DISTANCE_SQRD = 150**2; // minimum distance in pixels
     return pixels.some((pixel) => {
       const dx = pixel.x - x;
       const dy = pixel.y - y;
@@ -62,7 +61,7 @@ export default function Game() {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
                 <ToastContainer
                   position="top-right"
-                  autoClose={3000}
+                  autoClose={2000}
                   hideProgressBar
                   newestOnTop={false}
                   closeOnClick
@@ -99,7 +98,25 @@ export default function Game() {
 
             {/* ⬇️ ghost Plant that follows cursor; doesn't capture events */}
             {cursor && (
-                <Plant size={70} opacity={0.5} x={cursor.x - 35} y={cursor.y - 35} listening={false} />
+<Plant
+  size={70}
+  opacity={0.5}
+  x={cursor.x - 35}
+  y={cursor.y - 35}
+  listening={false}
+  ref={node => {
+    if (node && tooCloseToExistingPlant(cursor.x, cursor.y)) {
+      node.cache();
+    }
+  }}
+  {...(tooCloseToExistingPlant(cursor.x, cursor.y) && {
+    filters: [Konva.Filters.RGBA],
+    red: 255,
+    green: 0,
+    blue: 0,
+    alpha: 0.75,
+  })}
+/>
             )}
           </GameMap>
         </Viewport>

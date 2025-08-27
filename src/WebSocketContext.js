@@ -43,7 +43,12 @@ export function WebSocketProvider({ children }) {
         socket = new WebSocket(`${WS_BACKEND}/ws/pixels/?uuid=${ws_uuid}`);
 
         socket.onopen = () => console.log("WS connected!");
-        socket.onclose = () => console.log("WS closed");
+        socket.onmessage = (ev) => {
+          console.log("WS message:", ev.data);
+        };
+        socket.onclose = (e) => {
+          console.warn("WS closed", { code: e.code, reason: e.reason, wasClean: e.wasClean });
+        };
         socket.onerror = (err) => console.error("WS error:", err);
 
         setWs(socket);

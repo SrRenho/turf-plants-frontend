@@ -2,12 +2,13 @@ import React, { useRef, useCallback } from 'react';
 import { Stage } from 'react-konva';
 import { useAuth } from './AuthProvider';
 import { useZoomDisplay } from './GameUIContext';
+import { usePlayer } from './PlayerProvider';
 
 export default function Viewport({ width, height, layerWidth, layerHeight, children }) {
   const stageRef = useRef(null);
   const rafRef = useRef(0); // for coalescing wheel events
-  const { user } = useAuth(); // Assuming useAuth is available in this context
-
+  const { user } = useAuth(); 
+  const { player } = usePlayer(); 
   const { setZoom } = useZoomDisplay(); 
 
   const stageSize = { width, height };
@@ -37,7 +38,7 @@ export default function Viewport({ width, height, layerWidth, layerHeight, child
     e.target.getStage().container().style.cursor = 'grabbing';
   };
   const handleDragEnd = (e) => {
-    e.target.getStage().container().style.cursor = user?.seeds? 'crosshair' : 'grab';
+    e.target.getStage().container().style.cursor = player?.seeds? 'crosshair' : 'grab';
   };
 
   const handleWheel = (e) => {
@@ -94,7 +95,7 @@ export default function Viewport({ width, height, layerWidth, layerHeight, child
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onWheel={handleWheel}
-        style={{ cursor: user?.seeds ? 'crosshair' : 'grab' }}
+        style={{ cursor: player?.seeds ? 'crosshair' : 'grab' }}
         x={initialPos.x}
         y={initialPos.y}
       >

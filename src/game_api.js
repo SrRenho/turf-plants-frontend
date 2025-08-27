@@ -19,3 +19,11 @@ export async function paintPixel(user, x, y, description) {
   if (!res.ok) throw new Error("Failed to paint pixel");
   return await res.json();
 }
+
+export async function fetchPlayer(user) {
+  const res = await fetch(`${BACKEND}/game_api/get_player/`, {
+    headers: { Authorization: `Bearer ${user.access_token}` },
+  });
+  if (!res.ok) throw new Error("Failed to fetch player");
+  return await res.json();
+}

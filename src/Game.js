@@ -12,9 +12,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import React, { useState } from 'react';
 import Konva from 'konva';
 import Plant from './Plant';
+import { usePlayer } from './PlayerProvider';
 
 export default function Game() {
-  const { user, decreaseSeed } = useAuth();
+  const { player, decreaseSeed } = usePlayer();
+  const { user } = useAuth();
   const { ws } = useWebSocket();
   const [pixels, addPixel, addPendingPixel] = usePixels(ws);
   const handlePaint = usePaintPixel(user, ws, addPixel, addPendingPixel);
@@ -32,7 +34,7 @@ export default function Game() {
     if (!user)
       return;
 
-    if (user.seeds <= 0) {
+    if (player.seeds <= 0) {
       toast.error("You have no seeds left to plant!");      
       return;
     }
@@ -100,7 +102,7 @@ export default function Game() {
               )
             )}
 
-            {user?.seeds > 0 && cursor && (
+            {player?.seeds > 0 && cursor && (
             <Plant
               opacity={0.5}
               x={cursor.x - 25}

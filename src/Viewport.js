@@ -79,8 +79,8 @@ export default function Viewport({ width, height, layerWidth, layerHeight, child
   };
 
   const initialPos = {
-    x: -layerWidth / 2 - width / 2,
-    y: -layerHeight / 2 - height / 2,
+    x: -layerWidth / 2 + width / 2,
+    y: -layerHeight / 2 + height / 2,
   };
 
   return (
